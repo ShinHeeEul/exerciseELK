@@ -205,7 +205,6 @@ $RECYCLE.BIN/
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle
 
 ### Gradle ###
-.gradle
 **/build/
 !src/**/build/
 
@@ -221,11 +220,6 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
-# Eclipse Gradle plugin generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
 
 ### Gradle Patch ###
 # Java heap dump
