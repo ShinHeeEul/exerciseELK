@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package iot;
+
+import "google/protobuf/timestamp.proto";
+
+option java_package = "grpc.proto";
+option java_outer_classname = "IotLogProto";
+
+
+service IotLogService {
+  rpc StreamLogs(stream LogRequest) returns (LogResponse);
+}
+
+// 로그 메시지 정의
+message LogRequest {
+  string device_id = 1;
+  google.protobuf.Timestamp timestamp = 2;
+  LogLevel log_level = 3;
+  string message = 4;
+  map<string, string> metadata = 5;
+}
+
+// 로그 응답 메시지
+message LogResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// 로그 레벨 Enum
+enum LogLevel {
+  UNKNOWN = 0;
+  DEBUG = 1;
+  INFO = 2;
+  WARN = 3;
+  ERROR = 4;
+  CRITICAL = 5;
+}
+
