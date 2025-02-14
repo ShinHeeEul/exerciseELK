@@ -1,0 +1,34 @@
+<configuration>
+
+    <logger name="sun.rmi.transport.tcp" level="INFO"/>
+    <logger name="javax.management.remote.rmi" level="INFO"/>
+    <logger name="sun.rmi.loader" level="INFO"/>
+
+    <!-- JSON 로그를 콘솔에 출력 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name": "exerciseETL"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- JSON 로그를 파일에 저장 -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>C:\Users\ShinHeeEul\Desktop\after gradu\test\exerciseETL\server\server\logs\access.log</file>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name": "exerciseETL"}</customFields>
+            <fieldNames>
+                <message>log_message</message>
+                <timestamp>@timestamp</timestamp>
+                <level>log_level</level>
+                <logger>logger_name</logger>
+                <thread>thread_name</thread>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>
