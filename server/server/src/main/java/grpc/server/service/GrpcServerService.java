@@ -16,12 +16,17 @@ public class GrpcServerService extends IotLogServiceGrpc.IotLogServiceImplBase {
     @Override
     public StreamObserver<IotLogProto.LogRequest> streamLogs(StreamObserver<IotLogProto.LogResponse> responseObserver) {
         return new StreamObserver<>() {
-            final StringBuilder messages = new StringBuilder();
-
             @Override
             public void onNext(IotLogProto.LogRequest logRequest) {
-                // TODO 여기서 Kafka로 보내는 로직 처리
-                messages.append(logRequest.getMessage()).append("\n");
+                if(logRequest.getLogLevel() == IotLogProto.LogLevel.INFO) {
+                    log.info(logRequest.getMessage());
+                } else if(logRequest.getLogLevel() == IotLogProto.LogLevel.DEBUG) {
+                    log.debug(logRequest.getMessage());
+                } else if(logRequest.getLogLevel() == IotLogProto.LogLevel.WARN) {
+                    log.warn(logRequest.getMessage());
+                } else {
+                    log.error(logRequest.getMessage());
+                }
             }
 
             @Override
@@ -31,8 +36,8 @@ public class GrpcServerService extends IotLogServiceGrpc.IotLogServiceImplBase {
 
             @Override
             public void onCompleted() {
-                IotLogProto.LogResponse logResponse = IotLogProto.LogResponse.newBuilder().setMessage(messages.toString()).build();
-                System.out.println(messages);
+                IotLogProto.LogResponse logResponse = IotLogProto.LogResponse.newBuilder().setMessage("전송 완료").build();
+                log.info("completed : " + logResponse.getMessage());
                 responseObserver.onNext(logResponse);
                 responseObserver.onCompleted();
             }
