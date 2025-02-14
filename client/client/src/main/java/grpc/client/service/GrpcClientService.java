@@ -43,7 +43,13 @@ public class GrpcClientService {
             requestObserver.onCompleted();
     }
 
-    public static IotLogProto.LogRequest generateLogRequest(int number) {
+    public IotLogProto.LogRequest generateLogRequest(int number) {
+
+        int randomInt = (int) ((Math.random() * 100) % 6);
+
+        IotLogProto.LogLevel level = IotLogProto.LogLevel.forNumber(randomInt);
+
+        log.info("{}", randomInt);
 
         Instant now = Instant.now();
         Timestamp timestamp = Timestamp.newBuilder()
@@ -52,7 +58,7 @@ public class GrpcClientService {
                 .build();
         return IotLogProto.LogRequest.newBuilder()
                 .setMessage("로그 메세지입니다. : " + number)
-                .setLogLevel(IotLogProto.LogLevel.INFO)
+                .setLogLevel(level)
                 .setDeviceId(number + "")
                 .setTimestamp(timestamp)
                 .build();
