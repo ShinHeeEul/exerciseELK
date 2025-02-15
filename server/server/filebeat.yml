@@ -6,5 +6,11 @@ filebeat.inputs:
     json.keys_under_root: true
     json.add_error_key: true
 
-output.logstash:
-  hosts: ["logstash:5044"]
+output.kafka:
+  hosts: [ "Kafka00Service:9092" ]
+  topic: "filebeat-logs"
+  partition.round_robin:
+    reachable_only: true
+  required_acks: 1
+  compression: gzip
+  max_message_bytes: 1000000
