@@ -1,0 +1,51 @@
+version: '3.7'
+
+networks:
+  elk:
+    external: true
+
+services:
+  Kafka00Service:
+    image: bitnami/kafka:3.7.0
+    container_name: Kafka00Service
+    networks:
+      - elk
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+      - "10000:10000"
+    environment:
+      KAFKA_ENABLE_KRAFT: yes
+      KAFKA_CFG_BROKER_ID: 0
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_KRAFT_CLUSTER_ID: "vAKATbQETi2GgDx8qseuZg"
+      KAFKA_CFG_PROCESS_ROLES: controller,broker
+      KAFKA_CFG_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://Kafka00Service:9092,PLAINTEXT_INTERNAL://Kafka00Service:10000
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: "0@localhost:9093"
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - ./kafka-data:/bitnami/kafka
+    restart: always
+  kafka-web-service:
+    image: provectuslabs/kafka-ui:latest
+    restart: unless-stopped
+    container_name: kafka-web-service
+    ports:
+      - '8085:8080'
+    environment:
+      KAFKA_CLUSTERS_0_NAME: Kafka00Service
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: Kafka00Service:9092
+      DYNAMIC_CONFIG_ENABLED: true
+      KAFKA_CLUSTERS_0_AUDIT_TOPICAUDITENABLED: true
+      KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED: true
+    depends_on:
+      - Kafka00Service
+    networks:
+      - elk
